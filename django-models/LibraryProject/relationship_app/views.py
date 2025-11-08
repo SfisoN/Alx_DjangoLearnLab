@@ -11,7 +11,7 @@ def list_books_text(request):
     Function-based view that returns a simple plain-text list of book titles
     and their authors (one per line). URL: /books/text/
     """
-    books = Book.objects.select_related('author').all()
+    books = Book.objects.all()
     lines = [f"{b.title} — {b.author.name}" for b in books]
     # join with newlines and return as plain text
     body = "\n".join(lines) if lines else "No books found."
