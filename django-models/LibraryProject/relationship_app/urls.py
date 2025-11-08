@@ -1,22 +1,17 @@
 from django.urls import path
+from django.contrib.auth.views import LoginView, LogoutView
 from . import views
-from .views import list_books
 
 app_name = "relationship_app"
 
 urlpatterns = [
-    # Function-based views
-    path("books/text/", views.list_books_text, name="list_books_text"),  # plain text
-    path("books/", views.list_books, name="list_books"),                # HTML template
-
-    # Class-based view for Library detail (use pk)
+    # existing app views
+    path("books/text/", views.list_books_text, name="list_books_text"),
+    path("books/", views.list_books, name="list_books"),
     path("libraries/<int:pk>/", views.LibraryDetailView.as_view(), name="library_detail"),
-]
 
-from django.contrib import admin
-from django.urls import path, include
-
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("relationship_app.urls", namespace="relationship_app")),
+    # authentication URLs — use built-in class names and function literally
+    path("register/", views.register, name="register"),  # ✅ views.register
+    path("login/", LoginView.as_view(template_name="relationship_app/login.html"), name="login"),  # ✅ LoginView.as_view(template_name=
+    path("logout/", LogoutView.as_view(template_name="relationship_app/logout.html"), name="logout"),  # ✅ LogoutView.as_view(template_name=
 ]
