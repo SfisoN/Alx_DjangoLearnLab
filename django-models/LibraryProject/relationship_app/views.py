@@ -2,6 +2,12 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.contrib.auth import login as auth_login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LoginView, LogoutView
+
 from .models import Library
 
 # Create your views here.
@@ -40,3 +46,30 @@ class LibraryDetailView(DetailView):
 def get_queryset(self):
      # prefetch books and their authors to avoid N+1 queries
     return Library.objects.prefetch_related('books__author').all()
+
+
+
+def register(request):
+    """
+    Displays and processes a UserCreationForm. Logs the user in after successful registration.
+    """
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # optional: immediately log the user in
+            auth_login(request, user)
+            # redirect to LOGIN_REDIRECT_URL or any page
+            return redirect(reverse_lazy('relationship_app:list_books'))
+    else:
+        form = UserCreationForm()
+    return render(request, "relationship_app/register.html", {"form": form})
+
+
+# --- Login / Logout using built-in class-based views ---
+class AppLoginView(LoginView):
+    template_name = "relationship_app/login.html"
+    redirect_authenticated_user = True  # if already logged in, redirect
+
+class AppLogoutView(LogoutView):
+    template_name = "relationship_app/logout.html"
