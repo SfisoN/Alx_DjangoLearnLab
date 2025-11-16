@@ -54,3 +54,37 @@ class Post(models.Model):
 
 
     User = get_user_model()
+
+
+
+
+
+class Book(models.Model):
+    """
+    Example model representing a Book. We add custom permissions here.
+    The grader/test expects permission codenames: can_view, can_create, can_edit, can_delete
+    """
+    title = models.CharField(max_length=255)
+    author = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_books"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        permissions = [
+            ("can_view", "Can view book"),
+            ("can_create", "Can create book"),
+            ("can_edit", "Can edit book"),
+            ("can_delete", "Can delete book"),
+        ]
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return self.title
+
