@@ -1,0 +1,11 @@
+<!-- LibraryProject/bookshelf/templates/bookshelf/form_example.html -->
+{% extends "base.html" %}
+{% block content %}
+  <h1>{{ action }} Book</h1>
+  <form method="post">
+    {% csrf_token %}  <!-- CSRF token is REQUIRED -->
+    {{ form.as_p }}
+    <button type="submit">{{ action }}</button>
+  </form>
+  <a href="{% url 'bookshelf:book_list' %}">Back</a>
+{% endblock %}

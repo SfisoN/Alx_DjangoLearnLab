@@ -29,9 +29,42 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = 'django-insecure-$1&fc5o+=hohnz5a@3^()!8i)o81z^0lgci%wt)ocr%^o17s$b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() in ("true", "1", "yes")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+
+# Security settings (recommended defaults for production)
+# Browser protections
+SECURE_BROWSER_XSS_FILTER = True
+# Prevent pages from being displayed in frames to avoid clickjacking
+X_FRAME_OPTIONS = "DENY"
+# Prevent content-type sniffing by browsers
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Cookies — mark secure so cookies are only sent via HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# HttpOnly for cookies so JavaScript can't read them (recommended)
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False  # If you need JS to read CSRF token, keep False. Default is False.
+
+# HSTS (only enable in production with HTTPS)
+SECURE_HSTS_SECONDS = int(os.getenv("DJANGO_HSTS_SECONDS", "0"))  # e.g. 31536000 in production
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv("DJANGO_HSTS_INCLUDE_SUBDOMAINS", "False") == "True"
+SECURE_HSTS_PRELOAD = os.getenv("DJANGO_HSTS_PRELOAD", "False") == "True"
+
+# Redirect HTTP -> HTTPS (enable in production)
+SECURE_SSL_REDIRECT = os.getenv("DJANGO_SECURE_SSL_REDIRECT", "False") == "True"
+
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+# Optionally use session-based CSRF tokens (depends on project)
+# CSRF_USE_SESSIONS = True
+
+# Content Security Policy - either use django-csp or the custom middleware below.
+# If using django-csp, add 'csp' to INSTALLED_APPS.
+USE_DJANGO_CSP = os.getenv("DJANGO_USE_DJANGO_CSP", "False") == "True"
 
 
 # Application definition
