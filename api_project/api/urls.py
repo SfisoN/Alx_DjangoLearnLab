@@ -10,4 +10,5 @@ router.register(r'books', BookViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('books-list/', BookViewSet.as_view(())),
 ]
