@@ -41,6 +41,18 @@ INSTALLED_APPS = [
     'api',
 ]
 
+REST_FRAMEWORK = {
+    # Default authentication: TokenAuthentication first (also keep SessionAuth for browsable API if desired)
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+
+    # Default permission (you can override per-view)
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ),
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
